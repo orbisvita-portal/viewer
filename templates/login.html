@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>로그인</title>
+  <style>
+
+  body {
+    background-color: #0b234a;
+    margin: 0;
+    font-family: Arial, sans-serif;
+  }
+
+#loginNotice {
+box-sizing: border-box;
+        max-width: 400px;
+        margin: 200px auto 10px auto;
+        text-align: center;
+        background-color: #f2f2f2;
+        color: #d93025;
+        padding: 8px 12px;
+        font-size: 14px;
+        border-radius: 4px;
+    }
+
+    #loginBox {
+box-sizing: border-box;
+      max-width: 400px;
+      margin: 40px auto;
+      padding: 20px;
+background-color: white;
+font-size: 14px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .login-input {
+      width: 100%;
+      padding: 8px;
+      margin: 5px 0;
+font-size: 14px;
+      box-sizing: border-box;
+      display: block;
+    }
+
+    .login-button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+font-size: 14px;
+      box-sizing: border-box;
+    }
+
+    #error-message {
+      color: red;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div id="loginNotice">⚠️ 현재 인터넷이 연결되어 있지 않습니다.<br> 
+            <b>7월 4일 17:00</b> 이전 수신/송신된 메일 확인만 가능합니다.</div>
+  <div id="loginBox">
+    <img src="{{ url_for('static', filename='logo.png') }}" style="display: block; margin: 0; padding: 5px;">
+    <form method="POST">
+      <input type="text" name="userid" placeholder="아이디 입력" class="login-input">
+      <input type="password" name="password" placeholder="비밀번호 입력" class="login-input">
+      <button type="submit" class="login-button">확인</button>
+    </form>
+    {% if error %}
+      <p id="error-message">{{ error }}</p>
+    {% endif %}
+  </div>
+</body>
+</html>

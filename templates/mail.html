@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>ORBIS VITA PORTAL</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: Arial, sans-serif; }
+    #topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #0b234a;
+      color: white;
+      padding: 10px 20px;
+      font-size: 18px;
+      font-weight: bold;
+    }
+    #logoutBtn {
+      background: white;
+      color: #060b66;
+      padding: 5px 10px;
+      border-radius: 4px;
+      border: none;
+      cursor: pointer;
+    }
+    #messageBar {
+        background-color: #f2f2f2;    /* 밝은 회색 배경 */
+        color: #d93025;               /* Gmail 스타일의 빨간 글씨 */
+        font-weight: bold;
+        padding: 8px 20px;
+        font-size: 14px;
+        text-align: center;
+        border-bottom: 1px solid #ccc;  
+    }
+    #main {
+      display: flex;
+      height: calc(100vh - 50px);
+    }
+    #left {
+width: 500px; 
+min-width: 500px; 
+max-width: 500px; 
+      border-right: 1px solid #ccc;
+      display: flex;
+      flex-direction: column;
+    }
+    .mailbox {
+      flex: 1;
+      overflow-y: auto;
+      border-bottom: 1px solid #ccc;
+    }
+    .mailbox-title {
+      background: #f2f2f2;
+      padding: 10px;
+      font-weight: bold;
+    }
+    .mailListItem {
+      padding: 10px;
+      border-bottom: 1px solid #eee;
+      cursor: pointer;
+    }
+    .mailListItem:hover {
+      background: #f9f9f9;
+    }
+    #right {
+      flex-grow: 1;
+      padding: 20px;
+      overflow-y: auto;
+    }
+    .subject { font-weight: bold; }
+    .from, .to, .date { font-size: 12px; color: #666; }
+  </style>
+  <script>
+    const user = {{ user | tojson | safe }};
+    const userid = "{{ userid }}";
+
+    function createMailItem(mail, containerId) {
+      const container = document.getElementById(containerId);
+      const item = document.createElement("div");
+      item.className = "mailListItem";
+      item.innerHTML = `
+        <div class="subject">${mail.subject}</div>
+        <div class="from">${mail.from}</div>
+        <div class="date">${mail.date}</div>
+      `;
+      item.onclick = () => {
+        document.getElementById("right").innerHTML = `
+          <h2>${mail.subject}</h2>
+          <div><strong>보낸 사람:</strong> ${mail.from}</div>
+          <div><strong>받은 사람:</strong> ${mail.to}</div>
+          <div><strong>날짜:</strong> ${mail.date}</div>
+          <hr>
+          <p>${mail.body}</p>
+        `;
+      };
+      container.appendChild(item);
+    }
+
+    window.onload = () => {
+      document.getElementById("usernameDisplay").textContent = `${user.name} (${userid}) 님, 환영합니다.`;
+      user.inbox.forEach(mail => createMailItem(mail, "inboxList"));
+      user.sent.forEach(mail => createMailItem(mail, "sentList"));
+    }
+  </script>
+</head>
+<body>
+  <div id="topbar">
+    ORBIS VITA PORTAL - EMAIL CLIENT V4.0
+    <span id="usernameDisplay"></span>
+    <a href="/logout"><button id="logoutBtn">로그아웃</button></a>
+  </div>
+ <div id="messageBar">⚠️ 현재 인터넷이 연결되어 있지 않습니다. 오프라인 사본을 출력합니다.</div>
+  <div id="main">
+    <div id="left">
+      <div class="mailbox">
+        <div class="mailbox-title">📥 받은 편지함</div>
+        <div id="inboxList"></div>
+      </div>
+      <div class="mailbox">
+        <div class="mailbox-title">📤 보낸 편지함</div>
+        <div id="sentList"></div>
+      </div>
+    </div>
+    <div id="right">
+      <p>메일 제목을 클릭하면 여기에 본문이 표시됩니다.</p>
+    </div>
+  </div>
+</body>
+</html>
